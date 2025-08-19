@@ -41,6 +41,8 @@ export const Hero = () => {
             router.push('/sign-in')
             return
         }
+        // Navigation
+        router.push('/create-trip')
     }
 
   return (

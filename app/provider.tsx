@@ -1,9 +1,10 @@
 "use client"
 import { Navbar } from '@/components/navbar';
+import { UserDetailContext } from '@/context/user-details-context';
 import { api } from '@/convex/_generated/api';
 import { useUser } from '@clerk/nextjs';
 import { useMutation } from 'convex/react';
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 const Provider = ({
   children,
@@ -11,6 +12,7 @@ const Provider = ({
   children: React.ReactNode;
 }>) => {
 
+      const [useDetails, setUserDetials] = useState<any>(null)
       const createUser = useMutation(api.user.createNewuser)
     
       const {user} = useUser();
@@ -26,17 +28,24 @@ const Provider = ({
             image_url: user?.imageUrl,
             clerk_user_id: user?.id,
             name: user?.fullName ?? ''
-      
           })
+          setUserDetials(result)
         }
+
       }
 
   return (
     <div>
-        <Navbar/>
-        {children}
+        <UserDetailContext.Provider value={{useDetails, setUserDetials}}>
+            <Navbar/>
+            {children}
+        </UserDetailContext.Provider>
     </div>
   )
 }
 
 export default Provider
+
+export const userDetails = ()=>{
+    return useContext(UserDetailContext)
+}
