@@ -1,5 +1,6 @@
 import React from 'react'
 import { Chatbox } from './_components/chatbox'
+import Itinerary from './_components/itinerary'
 
 const CreateTrip = () => {
   return (
@@ -7,7 +8,9 @@ const CreateTrip = () => {
         <div className="">
             <Chatbox/>
         </div>
-        <div className="">Trip Plan</div>
+        <div className="">
+          <Itinerary/>
+        </div>
     </div>
   )
 }

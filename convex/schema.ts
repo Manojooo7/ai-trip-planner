@@ -8,5 +8,13 @@ export default defineSchema({
         clerk_user_id: v.string(),
         image_url: v.string(),
         subscription: v.optional(v.string())
+    }),
+
+    trip: defineTable({
+        trip_id: v.string(),
+        trip_details: v.any(),
+        uid: v.id('user_table')
+
     })
+
 })

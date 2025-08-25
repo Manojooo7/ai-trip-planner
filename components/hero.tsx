@@ -8,31 +8,31 @@ import { PopularPlaces } from './popular-places'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
+export const badges = [
+    {
+        title: "Create new trip",
+        icon: Globe2,
+        iconColor: 'text-blue-600'
+    },
+    {
+        title: "Inspire me where to go",
+        icon: Plane,
+        iconColor: 'text-green-600'
+    },
+    {
+        title: "Discover hidden gems",
+        icon: Landmark,
+        iconColor: 'text-blue-800'
+    },
+    {
+        title: "Adventure Destination",
+        icon: Earth,
+        iconColor: 'text-orange-600'
+    }
+
+]
 export const Hero = () => {
 
-    const badges = [
-        {
-            title: "Create new trip",
-            icon: Globe2,
-            iconColor: 'text-blue-600'
-        },
-        {
-            title: "Inspire me where to go",
-            icon: Plane,
-            iconColor: 'text-green-600'
-        },
-        {
-            title: "Discover hidden gems",
-            icon: Landmark,
-            iconColor: 'text-blue-800'
-        },
-        {
-            title: "Adventure Destination",
-            icon: Earth,
-            iconColor: 'text-orange-600'
-        }
-
-    ]
 
     const {user} = useUser()
     const router = useRouter()

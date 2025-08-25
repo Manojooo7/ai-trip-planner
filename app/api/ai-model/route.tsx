@@ -7,30 +7,131 @@ export const openai = new OpenAI({
 });
 
 export async function POST(req:NextRequest) {
-    const {messages} = await req.json();
+    const {messages, isFinal} = await req.json();
+    console.log("Messages: ", messages);
+    
+const PROMPT = `
+You are an AI Trip Planner Agent. Your goal is to help the user plan a trip by asking one relevant trip-related question at a time.
+Only ask questions about the following details in order, and wait for the user's answer before asking the next: 
 
-    const PROMPT = `
-    You are an AI Trip Planner Agent. Your goal is to help the user plan a trip by **asking one relevant trip-related question at a time**.
-        Only ask questions about the following details in order, and wait for the user’s answer before asking the next: 
+1. Starting location (source) -> return ui: "source"
+2. Destination city or country -> return ui: "destination" 
+3. Group size (Solo, Couple, Family, Friends) -> return ui: "groupSize"
+4. Budget (Low, Medium, High) -> return ui: "budget"
+5. Trip duration (number of days) -> return ui: "duration"
+6. Travel interests -> return ui: "interests"
+7. Special requirements -> return ui: "requirements"
 
-        1. Starting location (source) 
-        2. Destination city or country 
-        3. Group size (Solo, Couple, Family, Friends) 
-        4. Budget (Low, Medium, High) 
-        5. Trip duration (number of days) 
-        6. Travel interests (e.g., adventure, sightseeing, cultural, food, nightlife, relaxation) 
-        7. Special requirements or preferences (if any)
-        Do not ask multiple questions at once, and never ask irrelevant questions.
-        If any answer is missing or unclear, politely ask the user to clarify before proceeding.
-        Always maintain a conversational, interactive style while asking questions.
-        Along wth response also send which ui component to display for generative UI for example 'budget/groupSize/TripDuration/Final) , where Final means AI generating complete final outpur
-        Once all required information is collected, generate and return a **strict JSON response only** (no explanations or extra text) with following JSON schema:
+Do not ask multiple questions at once, and never ask irrelevant questions.
+If any answer is missing or unclear, politely ask the user to clarify before proceeding.
+Always maintain a conversational, interactive style while asking questions.
 
-        {
+For each response, return a JSON object with:
+{
+    "resp": "Your question text here",
+    "ui": "corresponding_ui_component"
+}
 
-        resp:'Text Resp',
+When all information is collected, set ui: "final" for the complete trip plan.
+Make sure to match the exact ui component name with the question type (source/destination/groupSize/budget/duration/interests/requirements/final).
 
-        ui:'budget/groupSize/TripDuration/Final)'
+`
+
+const Final_PROMPT = `Generate Travel Plan with give details, give me Hotels options list with HotelName, 
+
+Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and  suggest itinerary with placeName, Place Details, Place Image Url,
+
+ Geo Coordinates,Place address, ticket Pricing, Time travel each of the location , with each day plan with best time to visit in JSON format.
+
+ Output Schema:
+
+ {
+
+  "trip_plan": {
+
+    "destination": "string",
+
+    "duration": "string",
+
+    "origin": "string",
+
+    "budget": "string",
+
+    "group_size": "string",
+
+    "hotels": [
+
+      {
+
+        "hotel_name": "string",
+
+        "hotel_address": "string",
+
+        "price_per_night": "string",
+
+        "hotel_image_url": "string",
+
+        "geo_coordinates": {
+
+          "latitude": "number",
+
+          "longitude": "number"
+
+        },
+
+        "rating": "number",
+
+        "description": "string"
+
+      }
+
+    ],
+
+    "itinerary": [
+
+      {
+
+        "day": "number",
+
+        "day_plan": "string",
+
+        "best_time_to_visit_day": "string",
+
+        "activities": [
+
+          {
+
+            "place_name": "string",
+
+            "place_details": "string",
+
+            "place_image_url": "string",
+
+            "geo_coordinates": {
+
+              "latitude": "number",
+
+              "longitude": "number"
+
+            },
+
+            "place_address": "string",
+
+            "ticket_pricing": "string",
+
+            "time_travel_each_location": "string",
+
+            "best_time_to_visit": "string"
+
+          }
+
+        ]
+
+      }
+
+    ]
+
+  }
 
 }
 
@@ -44,13 +145,13 @@ export async function POST(req:NextRequest) {
     
                 {
                     role: 'system',
-                    content: PROMPT
+                    content: isFinal ? Final_PROMPT : PROMPT
                 },
                 ...messages
             ],
         });
     
-        // console.log(completion.choices[0].message);
+        console.log(completion.choices[0].message);
     
         const msgs = completion.choices[0].message;
 
@@ -60,6 +161,8 @@ export async function POST(req:NextRequest) {
         return NextResponse.json(JSON.parse(msgs.content ?? ''))
         
     } catch (error) {
+        console.log(NextResponse.json(error));
+        
         return NextResponse.json(error)
     }
 }

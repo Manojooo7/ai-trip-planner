@@ -12,7 +12,7 @@ const Provider = ({
   children: React.ReactNode;
 }>) => {
 
-      const [useDetails, setUserDetials] = useState<any>(null)
+      const [userDetails, setUserDetials] = useState<any>(null)
       const createUser = useMutation(api.user.createNewuser)
     
       const {user} = useUser();
@@ -36,7 +36,7 @@ const Provider = ({
 
   return (
     <div>
-        <UserDetailContext.Provider value={{useDetails, setUserDetials}}>
+        <UserDetailContext.Provider value={{userDetails, setUserDetials}}>
             <Navbar/>
             {children}
         </UserDetailContext.Provider>
@@ -46,6 +46,6 @@ const Provider = ({
 
 export default Provider
 
-export const userDetails = ()=>{
+export const useUserDetails = ()=>{
     return useContext(UserDetailContext)
 }
