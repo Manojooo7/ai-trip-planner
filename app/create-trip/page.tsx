@@ -4,7 +4,7 @@ import Itinerary from './_components/itinerary'
 
 const CreateTrip = () => {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 p-10'>
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 p-10 h-screen'>
         <div className="">
             <Chatbox/>
         </div>

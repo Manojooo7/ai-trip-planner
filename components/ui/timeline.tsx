@@ -1,5 +1,6 @@
 "use client";
 import { TripInfo } from "@/app/create-trip/_components/chatbox";
+import HotelCard from "@/app/create-trip/_components/hotel";
 import { CalendarRange, IndianRupee, Users } from "lucide-react";
 import {
   useMotionValueEvent,
@@ -11,6 +12,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface TimelineEntry {
   title: string;
+  description: string;
+  bestTimeTovisit: string
   content: React.ReactNode;
 }
 
@@ -40,8 +43,8 @@ export const Timeline = ({ data, tripData }: { data: TimelineEntry[], tripData:T
       ref={containerRef}
     >
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto py-7 px-4 md:px-8 lg:px-10">
-        <h2 className="text-lg md:text-4xl mb-4 text-black dark:text-white max-w-4xl">
+      <div className="max-w-7xl mx-auto py-7">
+        <h2 className="text-lg md:text-4xl mb-4 text-black dark:text-white max-w-4xl font-medium">
           Your Trip Itinerary from <strong className="text-primary">{tripData?.origin}</strong> to <strong className="text-primary">{tripData?.destination}</strong> is ready
         </h2>
         <div className="flex gap-5 items-center">
@@ -60,6 +63,21 @@ export const Timeline = ({ data, tripData }: { data: TimelineEntry[], tripData:T
         </div>
       </div>
 
+      {/* Recomended Hotels */}
+
+      <div className="flex flex-col gap-3 w-full max-w-7xl mx-auto py-10">
+        <h1 className="text-xl md:text-4xl font-medium">Reomended <span className="text-primary font-bold">Hotels</span></h1>
+
+        <div className="relative w-full"></div>
+        <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4 items-center">
+          {tripData?.hotels.map((hotel:any, index: number)=>
+            <div className="snap-start" key={index} >
+              <HotelCard hotel={hotel}/>
+            </div> 
+          )}
+        </div>
+      </div>
+
       {/* Timeline Content */}
       <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
         {data.map((item, index) => (
@@ -72,7 +90,7 @@ export const Timeline = ({ data, tripData }: { data: TimelineEntry[], tripData:T
             className="flex flex-col items-start pt-10 px-4 md:px-8 relative"
           >
             {/* Timeline Dot */}
-            <div className="absolute left-0 w-4 h-4 bg-primary rounded-full transform -translate-x-2 mt-2">
+            <div className="absolute left-0 w-4 h-4 bg-primary rounded-full transform -translate-x-2 mt-2 z-20">
               <div className="w-4 h-4 bg-primary rounded-full animate-ping opacity-75"></div>
             </div>
 
@@ -81,6 +99,14 @@ export const Timeline = ({ data, tripData }: { data: TimelineEntry[], tripData:T
               <h3 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
                 {item.title}
               </h3>
+              {/* <div className="flex justify-between items-center"> */}
+                <p className="text-xl text-gray-500">
+                  Plan: {item.description}
+                </p>
+                <p className="text-xl text-gray-500">
+                  Best time to visit: {item.bestTimeTovisit}
+                </p>
+              {/* </div> */}
               <div className="prose dark:prose-invert max-w-none">
                 {item.content}
               </div>
@@ -89,7 +115,7 @@ export const Timeline = ({ data, tripData }: { data: TimelineEntry[], tripData:T
         ))}
 
         {/* Timeline Line */}
-        <div className="absolute left-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-neutral-200 dark:via-neutral-700 to-transparent">
+        <div className="absolute left-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-neutral-200 dark:via-neutral-700 to-transparent z-10">
           <motion.div
             style={{
               height: heightTransform,
