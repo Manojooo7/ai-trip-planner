@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { aj } from '../arcjet/route';
+import { currentUser } from '@clerk/nextjs/server';
 
 export const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
@@ -136,6 +138,18 @@ Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and
 }
 
 `
+
+const user = await currentUser()
+
+
+const decision = await aj.protect(req, { userId: user?.primaryEmailAddress?.emailAddress ?? '', requested: isFinal ? 5 : 0 }); // Deduct 5 tokens from the bucket
+
+if(decision.isDenied()){
+  return NextResponse.json({
+    resp: 'No free credit remaining',
+    ui: 'limit'
+  })
+}
 
     try {
         const completion = await openai.chat.completions.create({

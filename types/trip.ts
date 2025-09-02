@@ -40,3 +40,8 @@ export interface TripInfo {
   hotels: Hotel[]
   itinerary: ItineraryDay[]
 }
+
+export interface TripContext {
+  tripInfo: TripInfo | null,
+  setTripInfo:React.Dispatch<React.SetStateAction<TripInfo | null>>
+}

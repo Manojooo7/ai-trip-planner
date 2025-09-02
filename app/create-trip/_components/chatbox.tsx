@@ -13,8 +13,9 @@ import DurationUi from './duration-ui'
 import ViewTrip from './view-trip'
 import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import {useUserDetails } from '@/app/provider'
+import {useTripDetails, useUserDetails } from '@/app/provider'
 import { v4 } from 'uuid'
+import { TripContext } from '@/types/trip'
 
 
 export type Message = {
@@ -44,7 +45,8 @@ export const Chatbox = () => {
     const [triggerSent, setTriggerSend] = useState(false)
     const [isFinal, setIsFinal] = useState(false)
     const [tripDetails, setTripDetails] = useState<TripInfo>()
-    const {userDetails, setUserDetails} = useUserDetails()
+    const {userDetails, setUserDetails} = useUserDetails();
+    const {tripInfo, setTripInfo} = useTripDetails()
     const saveTrip = useMutation(api.trip.createTrip)
 
     const onSend = async() =>{
@@ -71,6 +73,7 @@ export const Chatbox = () => {
 
         if(isFinal){
             setTripDetails(result?.data?.trip_plan)
+            setTripInfo(result?.data?.trip_plan)
             const tripId = v4()
             await saveTrip({
                 trip_details: result?.data?.trip_plan,
